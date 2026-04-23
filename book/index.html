@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book-shop</title>
+    <style>
+        @font-face {
+            font-family: 'lemon';
+            src: url(fonts/ofont.ru_Lemon.ttf);
+        }
+        @font-face {
+            font-family: 'gat';
+            src: url(fonts/ofont.ru_Gatchina.ttf);
+        }
+        @font-face {
+            font-family:'traj' ;
+            src: url(fonts/ofont.ru_Trajan.ttf);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 20px;
+            padding-bottom: 100px;
+            font-family: 'gat', sans-serif;
+            background: #fefaf7;
+        }
+
+        /* Header */
+        .header {
+            background-color: rgb(245, 208, 208);
+            border-radius: 25px;
+            padding: 0 40px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-side {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 5px 20px;
+            transition: all 0.3s ease;
+            width: 350px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 8px;
+            font-family: 'gat', sans-serif;
+            font-size: 15px;
+            color: #362112;
+        }
+
+        .search-bar:focus-within {
+            width: 450px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 0;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 1;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        /* Корзина */
+        .shoping-cart {
+            position: relative;
+            cursor: pointer;
+        }
+
+        #top-cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #362112;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Бургер меню */
+        .burger-menu {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            transition: 0.3s;
+        }
+
+        .burger-menu:hover {
+            transform: scale(1.1);
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 280px;
+    height: 100%;
+    background: white;
+    z-index: 2000;
+    transition: 0.3s ease;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    padding: 30px 20px;
+    overflow-y: auto;
+}
+
+.sidebar-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    stroke: #362112;
+    stroke-width: 1.8;
+    fill: none;
+}
+
+.sidebar-list li {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    font-family: 'gat', sans-serif;
+    border-bottom: 1px solid #fafafa;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar-list li:hover {
+    color: #a18673;
+    padding-left: 8px;
+}
+
+.sidebar-list li:hover .sidebar-icon {
+    stroke: #a18673;
+}
+
+/* Разделитель */
+.sidebar-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #362112, transparent);
+    margin: 20px 0;
+    opacity: 0.25;
+}
+
+.sidebar-title {
+    font-family: 'lemon', sans-serif;
+    font-size: 13px;
+    color: #a18673;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.sidebar-header h3 {
+    font-family: 'lemon', sans-serif;
+    color: #362112;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+/*две колоны*/
+
+.sidebar-two-columns {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.sidebar-col {
+    flex: 1;
+}
+
+.sidebar-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #362112;
+    border-bottom: 1px solid #fafafa;
+}
+
+.sidebar-list li:hover {
+    color: #a18673;
+}
+
+.sidebar-list li:hover svg {
+    stroke: #a18673;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 1500;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* Дропдаун локации */
+.location-dropdown .dropdown-content {
+    min-width: 240px;
+    padding: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.country-item {
+    margin-bottom: 18px;
+}
+
+.country-item strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #362112;
+    font-size: 13px;
+    font-family: 'lemon', sans-serif;
+}
+
+.cities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.city {
+    padding: 5px 12px;
+    background: #f5f0ed;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #362112;
+}
+
+.city:hover {
+    background: #ffb7c5;
+    transform: translateY(-1px);
+}
+
+/* Кнопки категорий */
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 20px 20px 20px;
+}
+
+.category-header h2 {
+    font-family: 'lemon', sans-serif;
+    font-size: 24px;
+    color: #362112;
+}
+
+.category-btn {
+    background: none;
+    border: 1px solid #362112;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-family: 'gat', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #362112;
+}
+
+.category-btn:hover {
+    background: #362112;
+    color: #fefaf7;
+}
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            z-index: 1500;
+            backdrop-filter: blur(3px);
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Секции */
+        .hits-section, .new-arrivals-section {
+            margin-top: 50px;
+            padding: 0 20px;
+        }
+
+        .hits-section h2, .new-arrivals-section h2 {
+            font-family: "lemon", sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            color: #362112;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .scroll-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: #a18673;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f5f0ed;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a18673;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #362112;
+}
+
+
+        /* Карточки книг */
+        .book-card {
+            min-width: 180px;
+            background: #fff;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .book-card h4 {
+            margin: 10px 0 5px 0;
+            font-size: 14px;
+        }
+
+        .book-card p {
+            color: #777;
+            font-size: 12px;
+        }
+
+        /* Каталог */
+        .catalog-section {
+            padding: 40px 20px;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .catalog-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .catalog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .catalog-item {
+            background: #fff;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .catalog-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .catalog-item img {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .catalog-item h4 {
+            font-size: 16px;
+            margin: 5px 0;
+            min-height: 40px;
+        }
+
+        /* Кнопка "Ещё" */
+        .more-btn-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .load-more {
+            background-color: transparent;
+            border: 2px solid #362112;
+            padding: 12px 40px;
+            font-family: 'traj', sans-serif;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .load-more:hover {
+            background-color: #362112;
+            color: blanchedalmond;
+            transform: scale(1.05);
+        }
+
+        /* Футер */
+        .main-footer {
+            background-color: #f5e6d3;
+            margin-top: 80px;
+            padding: 20px 40px;
+            border-radius: 50px 50px 0 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .footer-logo h2 {
+            font-family: 'lemon', sans-serif;
+            color: #362112;
+            font-size: 20px;
+        }
+
+        .footer-links, .footer-contacts {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links h4, .footer-contacts h4 {
+            font-family: 'lemon', sans-serif;
+            color: #362112;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: #555;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #a18673;
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(54, 33, 18, 0.1);
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* Нижняя навигация */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 35px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #362112;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .nav-item svg {
+            margin-bottom: 4px;
+            opacity: 0.7;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-3px);
+            color: #a18673;
+        }
+
+        .nav-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #ffb7c5;
+            color: #362112;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Страница товара */
+        #product-page {
+            background: #fff;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .specs-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .spec-line {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .label {
+            color: #8e8e8e;
+            white-space: nowrap;
+        }
+
+        .dots {
+            flex-grow: 1;
+            border-bottom: 1px dotted #ccc;
+            margin: 0 8px;
+        }
+
+        .value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Страницы корзины/избранного */
+        #cart-page, #favorites-page, #profile-page {
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 30px;
+        }
+
+        /* Модалки */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Авторизация */
+        #auth-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fefaf7;
+            z-index: 10000;
+            padding: 100px 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 25px;
+            border: 2px solid #ffb7c5;
+            margin-bottom: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ffb7c5;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Прелоадер */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fefaf7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .book-animation {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #ffb7c5;
+            border-radius: 50%;
+            border-top-color: #362112;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-content p {
+            margin-top: 20px;
+            color: #362112;
+        }
+
+        /* Утилиты */
+        .hidden {
+            display: none !important;
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #362112;
+    color: #fefaf7;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-family: 'gat', sans-serif;
+    font-size: 14px;
+    z-index: 3000;
+    opacity: 0;
+    transition: 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <nav class="menu">
+        <div class="burger-menu">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+    </nav>
+
+    <div class="search-bar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" placeholder="поиск книг..." id="main-search">
+    </div>
+
+    <div class="right-side">
+        <div class="dropdown location-dropdown">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+    </svg>
+    <span id="selected-location">Алматы</span>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+    <div class="dropdown-content" id="location-menu">
+        <div class="country-item" data-country="Казахстан">
+            <strong>🇰🇿 Казахстан</strong>
+            <div class="cities">
+                <div class="city" data-city="Алматы">Алматы</div>
+                <div class="city" data-city="Астана">Астана</div>
+                <div class="city" data-city="Шымкент">Шымкент</div>
+                <div class="city" data-city="Караганда">Караганда</div>
+                <div class="city" data-city="Актобе">Актобе</div>
+            </div>
+        </div>
+        <div class="country-item" data-country="Россия">
+            <strong>🇷🇺 Россия</strong>
+            <div class="cities">
+                <div class="city" data-city="Москва">Москва</div>
+                <div class="city" data-city="Санкт-Петербург">Санкт-Петербург</div>
+                <div class="city" data-city="Новосибирск">Новосибирск</div>
+                <div class="city" data-city="Екатеринбург">Екатеринбург</div>
+                <div class="city" data-city="Казань">Казань</div>
+                <div class="city" data-city="Нижний Новгород">Нижний Новгород</div>
+                <div class="city" data-city="Челябинск">Челябинск</div>
+                <div class="city" data-city="Самара">Самара</div>
+                <div class="city" data-city="Омск">Омск</div>
+                <div class="city" data-city="Ростов-на-Дону">Ростов-на-Дону</div>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="dropdown">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span style="margin-left:5px">ru</span>
+            <div class="dropdown-content">
+                <div class="dropdown-item">🇷🇺 Русский</div>
+                <div class="dropdown-item">🇺🇸 English</div>
+            </div>
+        </div>
+        <div class="shoping-cart" id="cart-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span id="top-cart-count">0</span>
+        </div>
+    </div>
+</header>
+
+<div class="sidebar" id="main-sidebar">
+    <div class="sidebar-header">
+        <h3>Меню</h3>
+        <div class="close-sidebar">&times;</div>
+    </div>
+    
+    <!-- ДВЕ КОЛОНКИ -->
+    <div class="sidebar-two-columns">
+        
+        <!-- ЛЕВАЯ КОЛОНКА (личное) -->
+        <div class="sidebar-col">
+            <div class="sidebar-section">
+                <h4 class="sidebar-title">Аккаунт</h4>
+                <ul class="sidebar-list">
+                    <li id="sidebar-login">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <circle cx="12" cy="7" r="4"></circle>
+                            <path d="M20 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M4 21v-2a4 4 0 0 1 3-3.87"></path>
+                        </svg>
+                        <span>Войти</span>
+                    </li>
+                    <li id="sidebar-cart">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <span>Корзина</span>
+                    </li>
+                    <li id="sidebar-fav">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span>Избранное</span>
+                    </li>
+                    <li id="sidebar-search">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <span>Поиск</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- ПРАВАЯ КОЛОНКА (категории) -->
+        <div class="sidebar-col">
+            <div class="sidebar-section">
+                <h4 class="sidebar-title">Категории</h4>
+                <ul class="sidebar-list">
+                    <li data-category="romance">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span>Романы</span>
+                    </li>
+                    <li data-category="detective">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>Детективы</span>
+                    </li>
+                    <li data-category="fantasy">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                        <span>Фэнтези</span>
+                    </li>
+                    <li data-category="classic">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <span>Классика</span>
+                    </li>
+                    <li data-category="thriller">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <span>Триллеры</span>
+                    </li>
+                    <li data-category="kids">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#362112" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                        </svg>
+                        <span>Детские</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<div class="overlay" id="sidebar-overlay"></div>
+
+<section class="new-arrivals-section">
+    <h2>Новинки</h2>
+    <div class="scroll-container" id="new-arrivals-container"></div>
+</section>
+
+<section class="hits-section">
+    <h2>Hot Hits</h2>
+    <div class="scroll-container" id="hits-container"></div>
+</section>
+
+<section class="catalog-section">
+    <div class="catalog-grid" id="catalog-container"></div>
+    <div class="more-btn-container">
+        <button class="load-more" id="load-more-btn">Ещё</button>
+    </div>
+</section>
+
+<div id="product-page" style="display: none;">
+    <button id="close-product-btn" style="cursor:pointer; border:none; background:none; font-family:'lemon'; color:#a18673; margin-bottom:20px;">← назад в каталог</button>
+    <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start;">
+        <img id="p-img" src="" style="width: 350px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); object-fit: cover;">
+        <div style="flex: 1; min-width: 300px;">
+            <h1 id="p-title" style="font-family:'lemon'; color:#362112; margin:0; font-size: 32px;"></h1>
+            <p id="p-author" style="font-size: 18px; color:#a18673; margin-top: 5px;"></p>
+            <div style="display: flex; align-items: center; gap: 20px; margin: 25px 0;">
+                <h2 id="p-price" style="margin:0; color:#362112; font-size: 28px;"></h2>
+                <button class="load-more" id="add-to-cart-product" style="padding: 12px 40px;">Купить</button>
+            </div>
+            <div style="margin-bottom: 25px;">
+                <h4 style="margin-bottom: 8px; color:#362112;">Описание:</h4>
+                <p id="p-desc" style="line-height: 1.6; color: #555;"></p>
+            </div>
+            <div class="specs-box">
+                <div class="spec-line"><span class="label">Тип</span><div class="dots"></div><span class="value">Книга</span></div>
+                <div class="spec-line"><span class="label">Жанр</span><div class="dots"></div><span id="p-genre" class="value"></span></div>
+                <div class="spec-line"><span class="label">Вес</span><div class="dots"></div><span id="p-weight" class="value"></span></div>
+                <div style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 30px;">
+    <h3 style="font-family:'lemon'; color:#362112; margin-bottom: 20px;"> Вам также может понравиться</h3>
+    <div id="similar-books" style="display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px;">
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="cart-page" style="display: none;">
+    <button id="close-cart-btn" style="cursor:pointer; border:none; background:none; font-family:'lemon'; color:#a18673; margin-bottom:20px;">← вернуться к покупкам</button>
+    <h1 style="font-family:'lemon'; color:#362112;">Ваша корзина</h1>
+    <div id="cart-items-list" style="margin-top: 20px;"></div>
+    <div id="cart-empty-msg" style="text-align:center; display:none; margin-top: 50px;">
+        <p style="color:#a18673;">В корзине пока пусто...</p>
+    </div>
+    <div id="cart-summary" style="margin-top: 30px; border-top: 2px solid #f5f0ed; padding-top: 20px; text-align: right;">
+        <h3 style="color:#362112;">Итого: <span id="cart-total-price">0 ₽</span></h3>
+        <button class="load-more" id="checkout-btn" style="padding: 15px 50px;">Оформить заказ</button>
+    </div>
+</div>
+
+<div id="favorites-page" style="display: none;">
+    <button id="close-fav-btn" style="cursor:pointer; border:none; background:none; font-family:'lemon'; color:#a18673; margin-bottom:20px;">← назад</button>
+    <h1 style="font-family:'lemon'; color:#362112;">Моё избранное</h1>
+    <div id="favorites-list" class="catalog-grid" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));"></div>
+    <div id="fav-empty-msg" style="text-align:center; display:none; margin-top: 100px;">
+        <p style="color:#a18673; font-size: 18px;">Тут пока нет любимых книг...</p>
+    </div>
+</div>
+
+<div id="profile-page" style="display: none;">
+    <button id="close-profile-btn" style="cursor:pointer; border:none; background:none; font-family:'lemon'; color:#a18673; margin-bottom:20px;">← назад</button>
+    <h2 style="font-family:'lemon'; color:#362112; text-align: center; margin-bottom: 30px;">Мой профиль</h2>
+    <div style="display: flex; flex-direction: column; gap: 20px; max-width: 400px; margin: 0 auto;">
+        <input type="text" id="prof-name" placeholder="Ваше имя" style="padding: 12px; border-radius: 10px; border: 1px solid #eee;">
+        <input type="text" id="prof-phone" placeholder="Телефон" style="padding: 12px; border-radius: 10px; border: 1px solid #eee;">
+        <input type="text" id="prof-address" placeholder="Адрес" style="padding: 12px; border-radius: 10px; border: 1px solid #eee;">
+        <button id="logout-btn" style="padding: 12px; background: #ffb7c5; border: none; border-radius: 25px; cursor: pointer; margin-top: 20px;">Выйти из аккаунта</button>
+    </div>
+</div>
+
+<div class="add-book-fab" id="add-book-fab">
+    <span>+</span>
+</div>
+
+<div id="add-book-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 style="font-family:'lemon'; color:#362112;">Добавить свою книгу</h2>
+        <input type="text" id="new-title" placeholder="Название" required>
+        <input type="text" id="new-author" placeholder="Автор" required>
+        <input type="text" id="new-price" placeholder="Цена" required>
+        <input type="text" id="new-img" placeholder="Ссылка на фото" required>
+        <textarea id="new-desc" placeholder="Описание"></textarea>
+        <button id="submit-book-btn" class="load-more" style="width:100%; margin-top:10px;">Опубликовать</button>
+    </div>
+</div>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <div class="footer-logo">
+            <h2>Book-shop</h2>
+            <p>Твой уютный уголок для чтения</p>
+        </div>
+        <div class="footer-links">
+            <h4>Разделы</h4>
+            <a href="#">Главная</a>
+            <a href="#">Каталог</a>
+            <a href="#">Популярное</a>
+        </div>
+        <div class="footer-contacts">
+            <h4>Контакты</h4>
+            <p>📍 г. Алматы, пр. Абая 10</p>
+            <p>📞 +7 (777) 777-77-77</p>
+            <p>✉️ info@bookshop.kz</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 Book-shop. Сделано с любовью</p>
+    </div>
+</footer>
+
+<nav class="bottom-nav">
+    <div class="nav-item" id="nav-home">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+        <span>главная</span>
+    </div>
+    <div class="nav-item" id="nav-fav">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>избранное</span>
+        <span class="nav-count" id="fav-count">0</span>
+    </div>
+    <div class="nav-item" id="nav-profile">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M20 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M4 21v-2a4 4 0 0 1 3-3.87"></path>
+        </svg>
+        <span>кабинет</span>
+    </div>
+    <div class="nav-item" id="nav-cart">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span>корзина</span>
+        <span class="nav-count" id="cart-count">0</span>
+    </div>
+</nav>
+
+<div id="auth-page">
+    <div style="position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer;" id="close-auth-btn">&times;</div>
+    <h2 style="font-family:'lemon'; color:#362112; font-size: 28px;">Добро пожаловать</h2>
+    <p style="color: #a18673; margin-bottom: 40px;">Войдите или зарегистрируйтесь</p>
+    <div style="max-width: 300px; margin: 0 auto;">
+        <input type="text" id="auth-name" class="auth-input" placeholder="Ваше имя">
+        <input type="email" id="auth-email" class="auth-input" placeholder="Email">
+        
+        <!-- Поле пароля с кнопкой показать/скрыть -->
+        <div style="position: relative;">
+            <input type="password" id="auth-password" class="auth-input" placeholder="Пароль" style="padding-right: 50px;">
+            <button type="button" id="toggle-password" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px;">👁️</button>
+        </div>
+    </div>
+    <button id="auth-submit-btn" class="auth-btn">Войти</button>
+</div>
+
+<div id="preloader">
+    <div class="loader-content">
+        <div class="book-animation"></div>
+        <p>Открываем мир книг...</p>
+    </div>
+</div>
+
+<div id="toast-notification" class="toast">
+    <span id="toast-message"></span>
+</div>
+
+<script>
+   // ========== ДАННЫЕ ==========
+let booksData = [
+    { id: 1, title: "Мой хулиган", author: "Алена Черничная", price: "567 ₽", img: "img/new1.jpeg", genre: "Роман", weight: "350 г", desc: "Трогательная история о любви" },
+    { id: 2, title: "Кошмарных снов, любимая", author: "Анна Джейн", price: "310 ₽", img: "img/new2.jpeg", genre: "Роман", weight: "320 г", desc: "Захватывающая история" },
+    { id: 3, title: "Drama Queen", author: "Дана Делон, Ксюша Левина, Виктория Побединская", price: "266 ₽", img: "img/new3.jpeg", genre: "Драма", weight: "300 г", desc: "Яркая и эмоциональная" },
+    { id: 4, title: "Хулиган", author: "Эмилия Грин", price: "778 ₽", img: "img/new4.jpeg", genre: "Роман", weight: "380 г", desc: "О смелости и страсти" },
+    { id: 5, title: "На крыльях любви", author: "Эмилия Грин", price: "1882 ₽", img: "img/new5.jpeg", genre: "Роман", weight: "420 г", desc: "Эпическая история любви" },
+    { id: 6, title: "Тайна фанатки", author: "Г.Н.Райт", price: "828 ₽", img: "img/new6.jpeg", genre: "Детектив", weight: "340 г", desc: "Интригующий детектив" },
+    { id: 7, title: "Моя девочка", author: "Эмилия Грин", price: "541 ₽", img: "img/new7.jpeg", genre: "Роман", weight: "310 г", desc: "Нежная история" },
+    { id: 8, title: "Зверь", author: "Селина Аллен", price: "648 ₽", img: "img/new8.jpeg", genre: "Триллер", weight: "360 г", desc: "Напряженный триллер" },
+    { id: 9, title: "Сила притяжения", author: "Энни Дайвер", price: "856 ₽", img: "img/new10.jpeg", genre: "Роман", weight: "330 г", desc: "История о любви и притяжении" },
+    { id: 10, title: "Его Мальвина", author: "Алена Черничная", price: "479 ₽", img: "img/new11.jpeg", genre: "Роман", weight: "290 г", desc: "Нежная история" },
+    { id: 11, title: "Спорим тебе понравится", author: "Даша Коэн", price: "479 ₽", img: "img/new12.jpeg", genre: "Роман", weight: "300 г", desc: "Лёгкая романтическая комедия" },
+    { id: 12, title: "Ошибка", author: "Эль Кеннеди", price: "603 ₽", img: "img/ошибка.jpeg", genre: "Роман", weight: "350 г", desc: "Спортивный роман" },
+    { id: 13, title: "Сделка", author: "Эль Кеннеди", price: "594 ₽", img: "img/сделка.jpeg", genre: "Роман", weight: "340 г", desc: "Бестселлер" },
+    { id: 14, title: "По осколкам твоего сердца", author: "Анна Джейн", price: "720 ₽", img: "img/потс.jpeg", genre: "Драма", weight: "380 г", desc: "Эмоциональная история" },
+    { id: 15, title: "Любовь-Ненависть", author: "Анна Джейн", price: "650 ₽", img: "img/лн.jpeg", genre: "Роман", weight: "360 г", desc: "О противоречиях" },
+    { id: 16, title: "Анна Каренина", author: "Л.Н. Толстой", price: "450 ₽", img: "img/Анна Каренина.jpeg", genre: "Классика", weight: "500 г", desc: "Великий роман" },
+    { id: 17, title: "Преступление и наказание", author: "Ф.М. Достоевский", price: "480 ₽", img: "img/преступление и наказание.jpeg", genre: "Классика", weight: "520 г", desc: "Философский роман" },
+    { id: 18, title: "Испорченный", author: "Пенелопа Дуглас", price: "610 ₽", img: "img/испорченный.jpeg", genre: "Роман", weight: "340 г", desc: "Тёмный роман" },
+    { id: 19, title: "Капкан", author: "Брук Лин", price: "683 ₽", img: "img/book1.jpeg", genre: "Триллер", weight: "320 г", desc: "Детектив" },
+    { id: 20, title: "Шах и мат", author: "Али Хейзелвуд", price: "689 ₽", img: "img/book2.jpeg", genre: "Роман", weight: "350 г", desc: "О шахматах и любви" },
+    { id: 21, title: "Как проиграть в любви", author: "Сара Нэй", price: "287 ₽", img: "img/book3.jpeg", genre: "Роман", weight: "280 г", desc: "Лёгкий роман" },
+    { id: 22, title: "Как завоевать девушку", author: "Сара Нэй", price: "543 ₽", img: "img/book4.jpeg", genre: "Роман", weight: "300 г", desc: "Романтическая комедия" },
+    { id: 23, title: "Восхитительная Ведьма", author: "Анна Джейн", price: "538 ₽", img: "img/book5.jpeg", genre: "Фэнтези", weight: "340 г", desc: "Магия и любовь" },
+    { id: 24, title: "Моя Мия", author: "Лина Коваль", price: "643 ₽", img: "img/book6.jpeg", genre: "Роман", weight: "320 г", desc: "Трогательная история" },
+    { id: 25, title: "Плохое воспитание", author: "Эмилия Грин", price: "522 ₽", img: "img/book7.jpeg", genre: "Роман", weight: "310 г", desc: "О взрослении" },
+    { id: 26, title: "Сплетня", author: "Катя Саммер", price: "546 ₽", img: "img/book8.jpeg", genre: "Драма", weight: "330 г", desc: "Школьная драма" },
+    { id: 27, title: "Искупление страстью", author: "Джулия Вольмут", price: "606 ₽", img: "img/book9.jpeg", genre: "Роман", weight: "350 г", desc: "Страстная история" },
+    { id: 28, title: "Игрок", author: "Селина Аллен", price: "572 ₽", img: "img/book10.jpeg", genre: "Роман", weight: "320 г", desc: "Спортивный роман" },
+    { id: 29, title: "Без любви не считается", author: "Алекс Хилл", price: "556 ₽", img: "img/book11.jpeg", genre: "Роман", weight: "300 г", desc: "Ромком" },
+    { id: 30, title: "На бешеной скорости", author: "Тамуна Менро", price: "588 ₽", img: "img/book12.jpeg", genre: "Роман", weight: "310 г", desc: "Гонки и любовь" },
+];
+
+
+let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+let favorites = JSON.parse(localStorage.getItem('myFavorites')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+let currentLanguage = localStorage.getItem('language') || 'ru';
+let visibleBooks = 8;
+
+// ========== ПЕРЕВОДЫ ==========
+const translations = {
+    ru: {
+        search: "поиск книг...", cart: "корзина", favorites: "избранное", profile: "кабинет",
+        home: "главная", addBook: "Добавить свою книгу", total: "Итого:", checkout: "Оформить заказ",
+        emptyCart: "В корзине пока пусто...", emptyFav: "Тут пока нет любимых книг..."
+    },
+    en: {
+        search: "search books...", cart: "cart", favorites: "favorites", profile: "profile",
+        home: "home", addBook: "Add your book", total: "Total:", checkout: "Checkout",
+        emptyCart: "Cart is empty...", emptyFav: "No favorite books yet..."
+    }
+};
+
+// ========== ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА ==========
+function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    document.querySelector('.search-bar input').placeholder = translations[lang].search;
+    document.querySelectorAll('.nav-item span').forEach((span, i) => {
+        const texts = [translations[lang].home, translations[lang].favorites, translations[lang].profile, translations[lang].cart];
+        if (span.innerText !== '0') span.innerText = texts[i] || span.innerText;
+    });
+    document.querySelector('.add-book-fab span').innerText = '+';
+}
+
+// ========== ВСПОМОГАТЕЛЬНЫЕ ==========
+function toggleSections(show) {
+    const sections = ['.new-arrivals-section', '.hits-section', '.catalog-section', '.main-footer'];
+    sections.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) el.style.display = show;
+    });
+}
+
+function updateCounters() {
+    document.getElementById('cart-count').innerText = cart.length;
+    document.getElementById('top-cart-count').innerText = cart.length;
+    document.getElementById('fav-count').innerText = favorites.length;
+}
+
+function checkAccess() {
+    if (!currentUser) {
+        document.getElementById('auth-page').style.display = 'block';
+        toggleSections('none');
+        return false;
+    }
+    return true;
+}
+
+// ========== РЕНДЕР КАРТОЧЕК (С СЕРДЕЧКАМИ) ==========
+function renderBooks() {
+    const catalog = document.getElementById('catalog-container');
+    const hits = document.getElementById('hits-container');
+    const newArrivals = document.getElementById('new-arrivals-container');
+    
+    if (!catalog) return;
+    
+    // Каталог
+    catalog.innerHTML = '';
+    const toShow = booksData.slice(0, visibleBooks);
+    toShow.forEach(book => {
+        const isFav = favorites.some(f => f.id === book.id);
+        const card = document.createElement('div');
+        card.className = 'catalog-item';
+        card.innerHTML = `
+            <div style="position: relative;">
+                <img src="${book.img}" alt="${book.title}">
+                <button class="fav-btn" data-id="${book.id}" style="position: absolute; top: 10px; right: 10px; background: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    ${isFav ? '❤️' : '🤍'}
+                </button>
+            </div>
+            <h4>${book.title}</h4>
+            <p>${book.price}</p>
+        `;
+        card.onclick = (e) => {
+            if (!e.target.closest('.fav-btn')) openProduct(book.id);
+        };
+        card.querySelector('.fav-btn').onclick = (e) => {
+            e.stopPropagation();
+            toggleFavorite(book.id);
+        };
+        catalog.appendChild(card);
+    });
+    
+    // Хиты
+    if (hits) {
+        hits.innerHTML = '';
+        booksData.slice(0, 6).forEach(book => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = `<img src="${book.img}"><h4>${book.title}</h4><p>${book.price}</p>`;
+            card.onclick = () => openProduct(book.id);
+            hits.appendChild(card);
+        });
+    }
+    
+    // Новинки
+    if (newArrivals) {
+        newArrivals.innerHTML = '';
+        booksData.slice(4, 11).forEach(book => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = `<img src="${book.img}"><h4>${book.title}</h4><p>${book.price}</p>`;
+            card.onclick = () => openProduct(book.id);
+            newArrivals.appendChild(card);
+        });
+    }
+}
+
+// ========== ИЗБРАННОЕ ==========
+function toggleFavorite(bookId) {
+    if (!checkAccess()) return;
+    const book = booksData.find(b => b.id === bookId);
+    const index = favorites.findIndex(f => f.id === bookId);
+    
+    if (index === -1) {
+        favorites.push(book);
+    } else {
+        favorites.splice(index, 1);
+    }
+    
+    localStorage.setItem('myFavorites', JSON.stringify(favorites));
+    updateCounters();
+    renderBooks();
+    if (document.getElementById('favorites-page').style.display === 'block') {
+        renderFavorites();
+    }
+}
+
+function renderFavorites() {
+    const list = document.getElementById('favorites-list');
+    const emptyMsg = document.getElementById('fav-empty-msg');
+    
+    if (!list) return;
+    list.innerHTML = '';
+    
+    if (favorites.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+    }
+    
+    emptyMsg.style.display = 'none';
+    favorites.forEach(book => {
+        const card = document.createElement('div');
+        card.className = 'catalog-item';
+        card.innerHTML = `
+            <img src="${book.img}" alt="${book.title}">
+            <h4>${book.title}</h4>
+            <p>${book.price}</p>
+            <button class="remove-fav" data-id="${book.id}" style="margin-top: 10px; background: none; border: 1px solid #ffb7c5; border-radius: 20px; padding: 5px; cursor: pointer;">❤️ Удалить</button>
+        `;
+        card.querySelector('.remove-fav').onclick = (e) => {
+            e.stopPropagation();
+            toggleFavorite(book.id);
+        };
+        list.appendChild(card);
+    });
+}
+
+function openFavorites() {
+    if (!checkAccess()) return;
+    toggleSections('none');
+    document.getElementById('product-page').style.display = 'none';
+    document.getElementById('cart-page').style.display = 'none';
+    document.getElementById('profile-page').style.display = 'none';
+    document.getElementById('favorites-page').style.display = 'block';
+    renderFavorites();
+}
+
+// ========== КОРЗИНА ==========
+function renderCart() {
+    const list = document.getElementById('cart-items-list');
+    const emptyMsg = document.getElementById('cart-empty-msg');
+    const summary = document.getElementById('cart-summary');
+    
+    if (!list) return;
+    list.innerHTML = '';
+    
+    if (cart.length === 0) {
+        emptyMsg.style.display = 'block';
+        summary.style.display = 'none';
+        return;
+    }
+    
+    emptyMsg.style.display = 'none';
+    summary.style.display = 'block';
+    
+    let total = 0;
+    cart.forEach((item, idx) => {
+        const priceNum = parseInt(item.price.replace(/[^\d]/g, '')) || 0;
+        total += priceNum;
+        list.innerHTML += `
+            <div style="display: flex; align-items: center; gap: 20px; background: #fdfdfd; padding: 15px; border-radius: 15px; margin-bottom: 10px;">
+                <img src="${item.img}" style="width: 50px; border-radius: 5px;">
+                <div style="flex: 1;"><h4 style="margin:0;">${item.title}</h4><p style="margin:0; font-size: 12px; color:#a18673;">${item.author}</p></div>
+                <div style="font-weight:bold;">${item.price}</div>
+                <button class="remove-from-cart" data-index="${idx}" style="background:none; border:none; color:red; cursor:pointer;">&times;</button>
+            </div>
+        `;
+    });
+    document.getElementById('cart-total-price').innerText = total + ' ₽';
+    
+    document.querySelectorAll('.remove-from-cart').forEach(btn => {
+        btn.onclick = () => {
+            const idx = parseInt(btn.dataset.index);
+            cart.splice(idx, 1);
+            localStorage.setItem('myCart', JSON.stringify(cart));
+            updateCounters();
+            renderCart();
+        };
+    });
+}
+
+function openCart() {
+    if (!checkAccess()) return;
+    toggleSections('none');
+    document.getElementById('product-page').style.display = 'none';
+    document.getElementById('favorites-page').style.display = 'none';
+    document.getElementById('profile-page').style.display = 'none';
+    document.getElementById('cart-page').style.display = 'block';
+    renderCart();
+}
+
+function addToCart(bookId) {
+    if (!checkAccess()) return;
+    const book = booksData.find(b => b.id === bookId);
+    cart.push(book);
+    localStorage.setItem('myCart', JSON.stringify(cart));
+    updateCounters();
+    
+    const btn = document.getElementById('add-to-cart-product');
+    if (btn) {
+        const originalText = btn.innerText;
+        btn.innerText = 'В корзине! ✓';
+        setTimeout(() => btn.innerText = originalText, 1500);
+    }
+}
+
+// ========== СТРАНИЦА ТОВАРА ==========
+let currentProductId = null;
+
+function openProduct(bookId) {
+    currentProductId = bookId;
+    const book = booksData.find(b => b.id === bookId);
+    if (!book) return;
+    
+    document.getElementById('p-img').src = book.img;
+    document.getElementById('p-title').innerText = book.title;
+    document.getElementById('p-author').innerText = book.author;
+    document.getElementById('p-price').innerText = book.price;
+    document.getElementById('p-desc').innerText = book.desc;
+    document.getElementById('p-genre').innerText = book.genre;
+    document.getElementById('p-weight').innerText = book.weight;
+    
+    toggleSections('none');
+    document.getElementById('product-page').style.display = 'block';
+    document.getElementById('cart-page').style.display = 'none';
+    document.getElementById('favorites-page').style.display = 'none';
+    document.getElementById('profile-page').style.display = 'none';
+
+    renderSimilar(bookId);
+}
+
+// ========== ПРОФИЛЬ (С АВАТАРКОЙ, КАРТОЙ, ТЕЛЕФОНОМ) ==========
+function openProfile() {
+    if (!checkAccess()) return;
+    toggleSections('none');
+    document.getElementById('product-page').style.display = 'none';
+    document.getElementById('cart-page').style.display = 'none';
+    document.getElementById('favorites-page').style.display = 'none';
+    document.getElementById('profile-page').style.display = 'block';
+    
+    // Загружаем данные
+    document.getElementById('prof-name').value = currentUser?.name || '';
+    document.getElementById('prof-phone').value = currentUser?.phone || '';
+    document.getElementById('prof-address').value = currentUser?.address || '';
+    document.getElementById('prof-card').value = currentUser?.card || '';
+    
+    // Загружаем аватарку
+    if (currentUser?.avatar) {
+        const avatarContainer = document.getElementById('avatar-container');
+        if (avatarContainer) {
+            avatarContainer.style.backgroundImage = `url(${currentUser.avatar})`;
+            avatarContainer.style.backgroundSize = 'cover';
+            avatarContainer.innerText = '';
+        }
+    }
+}
+
+function saveProfile() {
+    if (!currentUser) return;
+    
+    currentUser.name = document.getElementById('prof-name').value;
+    currentUser.phone = document.getElementById('prof-phone').value;
+    currentUser.address = document.getElementById('prof-address').value;
+    currentUser.card = document.getElementById('prof-card').value;
+    
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+   
+}
+
+function handleAvatarUpload(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const avatarContainer = document.getElementById('avatar-container');
+            avatarContainer.style.backgroundImage = `url(${ev.target.result})`;
+            avatarContainer.style.backgroundSize = 'cover';
+            avatarContainer.innerText = '';
+            if (currentUser) {
+                currentUser.avatar = ev.target.result;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// ========== АВТОРИЗАЦИЯ ==========
+function handleAuth() {
+    const name = document.getElementById('auth-name').value;
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    
+    if (!name || !email || !password) {
+        alert('Заполните все поля');
+        return;
+    }
+    
+    currentUser = { name, email, phone: '', address: '', card: '', avatar: null };
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    document.getElementById('auth-page').style.display = 'none';
+    toggleSections('');
+    renderBooks();
+
+}
+
+
+// ========== ДОБАВЛЕНИЕ КНИГИ ==========
+function addNewBook() {
+    if (!checkAccess()) return;
+    
+    const newBook = {
+        id: Date.now(),
+        title: document.getElementById('new-title').value,
+        author: document.getElementById('new-author').value,
+        price: document.getElementById('new-price').value,
+        img: document.getElementById('new-img').value || 'https://via.placeholder.com/200x300?text=New',
+        desc: document.getElementById('new-desc').value || 'Новая книга',
+        genre: 'Современная проза',
+        weight: '350 г'
+    };
+    
+    if (!newBook.title || !newBook.author || !newBook.price) {
+   
+        return;
+    }
+    
+    booksData.unshift(newBook);
+    renderBooks();
+    document.getElementById('add-book-modal').style.display = 'none';
+    
+    document.getElementById('new-title').value = '';
+    document.getElementById('new-author').value = '';
+    document.getElementById('new-price').value = '';
+    document.getElementById('new-img').value = '';
+    document.getElementById('new-desc').value = '';
+    
+
+}
+
+// ========== ИНИЦИАЛИЗАЦИЯ ==========
+document.addEventListener('DOMContentLoaded', () => {
+    renderBooks();
+    updateCounters();
+    setupSearch();
+    setLanguage(currentLanguage);
+    
+    // Добавляем HTML для профиля с аватаркой
+    const profilePage = document.getElementById('profile-page');
+    if (profilePage && !document.getElementById('avatar-container')) {
+        profilePage.innerHTML = `
+            <button id="close-profile-btn" style="cursor:pointer; border:none; background:none; font-family:'lemon'; color:#a18673; margin-bottom:20px;">← назад</button>
+            <h2 style="font-family:'lemon'; color:#362112; text-align: center; margin-bottom: 30px;">Мой профиль</h2>
+            <div style="max-width: 400px; margin: 0 auto;">
+                <div id="avatar-container" style="width: 100px; height: 100px; border-radius: 50%; border: 2px dashed #ffb7c5; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #f5f0ed; overflow: hidden;">+</div>
+                <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                <input type="text" id="prof-name" placeholder="Имя" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
+                <input type="tel" id="prof-phone" placeholder="Телефон" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
+                <input type="text" id="prof-address" placeholder="Адрес" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
+                <input type="text" id="prof-card" placeholder="Номер карты" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 20px;">
+                <button id="save-profile-btn" style="width: 100%; padding: 12px; background: #ffb7c5; border: none; border-radius: 25px; cursor: pointer; margin-bottom: 10px;">💾 Сохранить</button>
+                <button id="logout-btn" style="width: 100%; padding: 12px; background: none; border: 1px solid #ffb7c5; border-radius: 25px; cursor: pointer;">🚪 Выйти</button>
+            </div>
+        `;
+        
+        document.getElementById('avatar-container')?.addEventListener('click', () => document.getElementById('avatar-input')?.click());
+        document.getElementById('avatar-input')?.addEventListener('change', handleAvatarUpload);
+        document.getElementById('save-profile-btn')?.addEventListener('click', saveProfile);
+        document.getElementById('close-profile-btn')?.addEventListener('click', () => {
+          document.getElementById('logout-btn')?.addEventListener('click', logout);
+            document.getElementById('profile-page').style.display = 'none';
+            toggleSections('');
+        });
+    }
+
+    function logout() {
+    if (confirm('Вы уверены, что хотите выйти?')) {
+        localStorage.removeItem('currentUser');
+        currentUser = null;
+        cart = [];
+        favorites = [];
+        updateCounters();
+        renderBooks();
+        toggleSections('');
+        document.getElementById('profile-page').style.display = 'none';
+        showToast('👋 Вы вышли из аккаунта');
+    }
+}
+    
+    // Прелоадер
+    setTimeout(() => {
+        const loader = document.getElementById('preloader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        }
+    }, 800);
+});
+
+// ========== ОБРАБОТЧИКИ СОБЫТИЙ ==========
+document.getElementById('nav-home')?.addEventListener('click', () => location.reload());
+document.getElementById('nav-fav')?.addEventListener('click', () => openFavorites());
+document.getElementById('nav-profile')?.addEventListener('click', () => openProfile());
+document.getElementById('nav-cart')?.addEventListener('click', () => openCart());
+document.getElementById('cart-icon')?.addEventListener('click', () => openCart());
+
+document.getElementById('close-product-btn')?.addEventListener('click', () => {
+    document.getElementById('product-page').style.display = 'none';
+    toggleSections('');
+});
+document.getElementById('close-cart-btn')?.addEventListener('click', () => {
+    document.getElementById('cart-page').style.display = 'none';
+    toggleSections('');
+});
+document.getElementById('close-fav-btn')?.addEventListener('click', () => {
+    document.getElementById('favorites-page').style.display = 'none';
+    toggleSections('');
+});
+
+document.getElementById('add-to-cart-product')?.addEventListener('click', () => {
+    if (currentProductId !== null) addToCart(currentProductId);
+});
+
+document.getElementById('load-more-btn')?.addEventListener('click', () => {
+    visibleBooks += 4;
+    renderBooks();
+    if (visibleBooks >= booksData.length) {
+        document.getElementById('load-more-btn').style.display = 'none';
+    }
+});
+
+document.getElementById('add-book-fab')?.addEventListener('click', () => {
+    if (checkAccess()) document.getElementById('add-book-modal').style.display = 'flex';
+});
+document.querySelector('.close-modal')?.addEventListener('click', () => {
+    document.getElementById('add-book-modal').style.display = 'none';
+});
+document.getElementById('submit-book-btn')?.addEventListener('click', addNewBook);
+
+document.getElementById('auth-submit-btn')?.addEventListener('click', handleAuth);
+document.getElementById('close-auth-btn')?.addEventListener('click', () => {
+    document.getElementById('auth-page').style.display = 'none';
+    toggleSections('');
+});
+document.getElementById('logout-btn')?.addEventListener('click', () => {
+    if (confirm('Вы уверены, что хотите выйти?')) {
+        localStorage.clear();
+        location.reload();
+    }
+});
+
+// Бургер-меню
+// Открытие бургера
+document.querySelector('.burger-menu')?.addEventListener('click', () => {
+    document.getElementById('main-sidebar')?.classList.add('active');
+    document.getElementById('sidebar-overlay')?.classList.add('active');
+});
+
+// Закрытие по крестику
+document.querySelector('.close-sidebar')?.addEventListener('click', () => {
+    document.getElementById('main-sidebar')?.classList.remove('active');
+    document.getElementById('sidebar-overlay')?.classList.remove('active');
+});
+
+// Закрытие по оверлею
+document.getElementById('sidebar-overlay')?.addEventListener('click', () => {
+    document.getElementById('main-sidebar')?.classList.remove('active');
+    document.getElementById('sidebar-overlay')?.classList.remove('active');
+});
+
+// Переключение языка
+document.querySelectorAll('.dropdown-item').forEach((item, i) => {
+    item.addEventListener('click', () => {
+        setLanguage(i === 0 ? 'ru' : 'en');
+    });
+});
+
+window.openFavorites = openFavorites;
+window.openProfile = openProfile;
+window.openCart = openCart;
+
+// Фильтр по категориям
+document.querySelectorAll('[data-category]').forEach(item => {
+    item.addEventListener('click', () => {
+        const category = item.dataset.category;
+        filterByCategory(category);
+        document.querySelector('.sidebar').classList.remove('active');
+        document.querySelector('.overlay').classList.remove('active');
+    });
+});
+
+function filterByCategory(category) {
+    const categoryMap = {
+        detective: ['Детектив', 'Триллер'],
+        romance: ['Роман', 'Драма'],
+        fantasy: ['Фэнтези'],
+        classic: ['Классика'],
+        thriller: ['Триллер', 'Детектив'],
+        kids: ['Детские']
+    };
+    
+    const allowedGenres = categoryMap[category] || [];
+    const items = document.querySelectorAll('#catalog-container .catalog-item');
+    
+    items.forEach((item, idx) => {
+        const book = booksData[idx];
+        if (allowedGenres.includes(book.genre)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+
+function resetFilter() {
+    document.querySelectorAll('#catalog-container .catalog-item').forEach(item => {
+        item.style.display = '';
+    });
+}
+
+// Выбор города
+document.querySelectorAll('.city').forEach(city => {
+    city.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedCity = city.innerText;
+        document.getElementById('selected-location').innerText = selectedCity;
+        localStorage.setItem('userCity', selectedCity);
+
+    });
+});
+
+// Загружаем сохранённый город
+const savedCity = localStorage.getItem('userCity');
+if (savedCity) {
+    document.getElementById('selected-location').innerText = savedCity;
+}
+
+function showToast(message, isError = false) {
+    const toast = document.getElementById('toast-notification');
+    const toastMessage = document.getElementById('toast-message');
+    
+    if (!toast) return;
+    
+    toastMessage.innerText = message;
+    toast.style.background = isError ? '#c0392b' : '#362112';
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.style.background = '#362112';
+    }, 3000);
+}
+
+document.querySelectorAll('.city').forEach(city => {
+    city.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const selectedCity = city.innerText;
+        const selectedCountry = city.closest('.country-item')?.dataset.country || '';
+        document.getElementById('selected-location').innerText = selectedCity;
+        localStorage.setItem('userCity', selectedCity);
+        
+      
+        showToast(`📍 Город изменён на ${selectedCity}${selectedCountry ? `, ${selectedCountry}` : ''}`);
+    });
+});
+
+// ========== ПОИСК (работает) ==========
+function setupSearch() {
+    const searchInput = document.getElementById('main-search');
+    if (!searchInput) return;
+    
+    searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('#catalog-container .catalog-item');
+        
+        cards.forEach(card => {
+            const title = card.querySelector('h4')?.innerText.toLowerCase() || '';
+            if (query === '' || title.includes(query)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+}
+
+setupSearch();
+
+// Принудительно навешиваем кнопку выхода
+setTimeout(() => {
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.onclick = () => {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                cart = [];
+                favorites = [];
+                updateCounters();
+                renderBooks();
+                toggleSections('');
+                document.getElementById('profile-page').style.display = 'none';
+                showToast('👋 Вы вышли из аккаунта');
+            }
+        };
+        console.log('✅ Кнопка выхода привязана');
+    } else {
+        console.log('❌ Кнопка выхода не найдена в DOM');
+    }
+}, 500);
+
+function renderSimilar(currentBookId) {
+    const container = document.getElementById('similar-books');
+    if (!container) return;
+    
+    // Берём все книги, кроме текущей
+    let otherBooks = booksData.filter(book => book.id !== currentBookId);
+    
+    // Перемешиваем случайно
+    for (let i = otherBooks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [otherBooks[i], otherBooks[j]] = [otherBooks[j], otherBooks[i]];
+    }
+    
+    // Берём первые 6
+    const similar = otherBooks.slice(0, 6);
+    
+    container.innerHTML = '';
+    similar.forEach(book => {
+        const card = document.createElement('div');
+        card.style.cssText = 'min-width: 140px; text-align: center; cursor: pointer;';
+        card.innerHTML = `
+            <img src="${book.img}" style="width: 100px; height: 140px; object-fit: cover; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <h4 style="font-size: 12px; margin-top: 10px; color: #362112;">${book.title}</h4>
+            <p style="font-size: 11px; color: #a18673;">${book.price}</p>
+        `;
+        card.onclick = () => openProduct(book.id);
+        container.appendChild(card);
+    });
+}
+
+</script>
+</body>
+</html>
